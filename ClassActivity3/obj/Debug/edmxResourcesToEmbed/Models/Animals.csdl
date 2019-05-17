@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="AnimalsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Owner">
+    <Key>
+      <PropertyRef Name="OwnerID" />
+    </Key>
+    <Property Name="OwnerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="VetID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Vet" Relationship="Self.FK_Owners_Vet" FromRole="Owners" ToRole="Vet" />
+  </EntityType>
+  <EntityType Name="Pet">
+    <Key>
+      <PropertyRef Name="PetID" />
+    </Key>
+    <Property Name="PetID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Breed" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="VetID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Vet" Relationship="Self.FK_Pets_Vet" FromRole="Pets" ToRole="Vet" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="Vet">
+    <Key>
+      <PropertyRef Name="VetID" />
+    </Key>
+    <Property Name="VetID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Location" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Owners" Relationship="Self.FK_Owners_Vet" FromRole="Vet" ToRole="Owners" />
+    <NavigationProperty Name="Pets" Relationship="Self.FK_Pets_Vet" FromRole="Vet" ToRole="Pets" />
+  </EntityType>
+  <Association Name="FK_Owners_Vet">
+    <End Role="Vet" Type="Self.Vet" Multiplicity="1" />
+    <End Role="Owners" Type="Self.Owner" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Vet">
+        <PropertyRef Name="VetID" />
+      </Principal>
+      <Dependent Role="Owners">
+        <PropertyRef Name="VetID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Pets_Vet">
+    <End Role="Vet" Type="Self.Vet" Multiplicity="1" />
+    <End Role="Pets" Type="Self.Pet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Vet">
+        <PropertyRef Name="VetID" />
+      </Principal>
+      <Dependent Role="Pets">
+        <PropertyRef Name="VetID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="AnimalsEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Owners" EntityType="Self.Owner" />
+    <EntitySet Name="Pets" EntityType="Self.Pet" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <EntitySet Name="Vets" EntityType="Self.Vet" />
+    <AssociationSet Name="FK_Owners_Vet" Association="Self.FK_Owners_Vet">
+      <End Role="Vet" EntitySet="Vets" />
+      <End Role="Owners" EntitySet="Owners" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Pets_Vet" Association="Self.FK_Pets_Vet">
+      <End Role="Vet" EntitySet="Vets" />
+      <End Role="Pets" EntitySet="Pets" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
